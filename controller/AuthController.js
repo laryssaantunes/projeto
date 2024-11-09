@@ -1,6 +1,7 @@
 const {PrismaClient} = require("@prisma/client");
 const prisma = new PrismaClient();
 const bcryptjs = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 class AuthController{
     static async cadastro(req, res) {
@@ -66,7 +67,36 @@ class AuthController{
 
 
     static async login {
+        const {email, password} = req.body;
 
+        const usuario = await prisma.usuario.findUnique({
+            where:{
+                email: email
+            }
+        });
+
+        if(!usuario){
+            return res.json({
+                erro: true,
+                mensagem: "usuário não encontrado",
+            });
+        }
+
+        //Verificação da senha
+        const senhaCorreta = bcryptjs.compareSync(password, usuario.password);
+        if(!senhaCorreta){
+            return res.json({
+                erro: true,
+                mensagem: "Senha incorreta.",
+            });
+        }
+        const token = jwt.sign({id: usuario.id}, process.env.secret-key, {
+            expiresIn: "1h",
+        });
+        res.json({
+            erro: false,
+            mensagem: "Autenticação realizada com sucesso!"
+        })
     }
 }
 module.exports = AuthController;

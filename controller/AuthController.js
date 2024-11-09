@@ -53,9 +53,15 @@ class AuthController{
                 },
             });
 
+            console.log(JSON.stringify(usuario));
+            const token = jwt.sign({id: usuario.id}, process.env.secret-key, {
+                expiresIn: "1h",
+            });
+
             return res.json({
             erro: false,
             mensagem: "Usuário cadastrado com sucesso!"
+            token: token,
             });
         } catch (error) {
             return res.json({

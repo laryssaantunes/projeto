@@ -4,10 +4,12 @@ const cors = require('cors')
 const app = express();
 
 app.use(express.json());
-app.(cors([
+
+app.use(
+    cors({
     origin: "http://localhost:3000",
     credentials: true
-]))
+}))
 
 app.use(express.json());
 // Responde a qualquer requisição encaminhada para 

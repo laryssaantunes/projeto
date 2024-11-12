@@ -6,13 +6,14 @@ class AuthController{
     static async cadastro(req, res) {
         const{nome, email, password} = req.body;
 
-        if (nome || nome.length < 6) {
+        if (!nome || nome.length < 6) {
             return res.status(422).json({
                 erro: true,
                 mernsagem: "O nome deve ter pelo menos 6 caracteres",
             });
         }
 
+        //Verificando os dados
         if (!email || email.length < 10) {
             return res.status(422).json({
                 erro: true,
@@ -31,14 +32,14 @@ class AuthController{
                     email: email
                 },
             });
-
+            // Verificando se o e-mail está cadastrado
             if(existe !== 0){
                 return res.status(422).json({
                     erro: true,
                     mensagem: "Já existe um usuário cadastrado com este e-mail",
                 })
             }
-
+            // Criando o úsuario no banco de dados
             const salt = bcryptjs.genSaltSync(8);
             const hashpassword = bcryptjs(password, salt);
 
@@ -52,7 +53,7 @@ class AuthController{
                 },
             });
 
-            console.log(JSON.stringify(usuario));
+            // Criando o token JWT
             const token = jwt.sign({id: usuario.id}, process.env.secret-key, {
                 expiresIn: "1h",
             });
@@ -74,6 +75,7 @@ class AuthController{
     static async login(req, res) {
         const {email, password} = req.body;
 
+        // Verificando se o úsuario existe
         const usuario = await prisma.usuario.findUnique({
             where:{
                 email: email
@@ -95,13 +97,16 @@ class AuthController{
                 mensagem: "Senha incorreta.",
             });
         }
+
+        //Gera o token 
         const token = jwt.sign({id: usuario.id}, process.env.secret-key, {
             expiresIn: "1h",
         });
         res.status(200).json({
             erro: false,
-            mensagem: "Autenticação realizada com sucesso!"
-        })
+            mensagem: "Autenticação realizada com sucesso!",
+            token: token, // Retornando o token para o fronend
+        });
     }
 }
 module.exports = AuthController;

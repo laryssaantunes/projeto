@@ -33,25 +33,25 @@ class AuthController{
             });
 
             // Verificando se o e-mail está cadastrado
-            if(existe !== 0){
+            if(existe != 0){
                 return res.status(422).json({
                     erro: true,
                     mensagem: "Já existe um usuário cadastrado com este e-mail",
                 })
             }
-            
+
             // Criando o úsuario no banco de dados
             const salt = bcryptjs.genSaltSync(8);
-            const hashpassword = bcryptjs(password, salt);
+            const hashpassword = bcryptjs.hashSync(password, salt);
 
             try{
-                await prisma.usuario.create({
-                 data: {
-                    nome: nome,
-                    email: email,
-                    password: hashpassword,
-                    tipo: "cliente",
-                },
+                const usuario = await prisma.usuario.create({
+                    data: {
+                      nome: nome,
+                      email: email,
+                      password: hashpassword,
+                      tipo: "cliente",
+                    },
             });
 
             // Criando o token JWT

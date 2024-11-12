@@ -5,24 +5,24 @@ const jwt = require("jsonwebtoken");
 class AuthController{
     static async cadastro(req, res) {
         const{nome, email, password} = req.body;
-
+        console.log("cadastro")
         //Verificando os dados
         if (!nome || nome.length < 6) {
             return res.status(422).json({
                 erro: true,
-                mernsagem: "O nome deve ter pelo menos 6 caracteres",
+                mensagem: "O nome deve ter pelo menos 6 caracteres",
             });
         }
         if (!email || email.length < 10) {
             return res.status(422).json({
                 erro: true,
-                mernsagem: "O email deve ter pelo menos 10 caracteres",
+                mensagem: "O email deve ter pelo menos 10 caracteres",
             });
         }
         if (!password || password.length < 8) {
             return res.status(422).json({
                 erro: true,
-                mernsagem: "A password deve ter pelo menos 10 caracteres",
+                mensagem: "A password deve ter pelo menos 10 caracteres",
             });
         }
 
@@ -55,7 +55,7 @@ class AuthController{
             });
 
             // Criando o token JWT
-            const token = jwt.sign({id: usuario.id}, process.env.secret-key, {
+            const token = jwt.sign({id: usuario.id}, process.env.SECRET_KEY, {
                 expiresIn: "1h",
             });
 

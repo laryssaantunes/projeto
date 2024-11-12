@@ -9,20 +9,20 @@ class AuthController{
         if (nome || nome.length < 6) {
             return res.status(422).json({
                 erro: true,
-            mernsagem: "O nome deve ter pelo menos 6 caracteres",
+                mernsagem: "O nome deve ter pelo menos 6 caracteres",
             });
         }
 
         if (!email || email.length < 10) {
             return res.status(422).json({
                 erro: true,
-            mernsagem: "O email deve ter pelo menos 10 caracteres",
+                mernsagem: "O email deve ter pelo menos 10 caracteres",
             });
         }
         if (!password || password.length < 8) {
             return res.status(422).json({
                 erro: true,
-            mernsagem: "A password deve ter pelo menos 10 caracteres",
+                mernsagem: "A password deve ter pelo menos 10 caracteres",
             });
         }
 
@@ -32,7 +32,7 @@ class AuthController{
                 },
             });
 
-            if(existe != 0){
+            if(existe !== 0){
                 return res.status(422).json({
                     erro: true,
                     mensagem: "Já existe um usuário cadastrado com este e-mail",
@@ -43,8 +43,8 @@ class AuthController{
             const hashpassword = bcryptjs(password, salt);
 
             try{
-            await prisma.usuario.create({
-                data: {
+                await prisma.usuario.create({
+                 data: {
                     nome: nome,
                     email: email,
                     password: hashpassword,
@@ -59,7 +59,7 @@ class AuthController{
 
             return res.status(201).json({
             erro: false,
-            mensagem: "Usuário cadastrado com sucesso!"
+            mensagem: "Usuário cadastrado com sucesso!",
             token: token,
             });
         } catch (error) {
@@ -71,7 +71,7 @@ class AuthController{
     }
 
 
-    static async login {
+    static async login(req, res) {
         const {email, password} = req.body;
 
         const usuario = await prisma.usuario.findUnique({

@@ -100,7 +100,7 @@ class AuthController{
         }
 
         //Gera o token 
-        const token = jwt.sign({id: usuario.id}, process.env.secret-key, {
+        const token = jwt.sign({id: usuario.id}, process.env.SECRET_KEY, {
             expiresIn: "1h",
         });
         res.status(200).json({

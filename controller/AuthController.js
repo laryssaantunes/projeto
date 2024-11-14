@@ -77,7 +77,7 @@ class AuthController{
         const {email, password} = req.body;
 
         // Verificando se o úsuario existe
-        const usuario = await prisma.usuario.findUnique({
+        const usuario = await prisma.usuario.findFirst({
             where:{
                 email: email
             }

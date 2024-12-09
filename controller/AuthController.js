@@ -109,5 +109,23 @@ class AuthController{
             token, // Retornando o token para o fronend
         });
     }
+
+    static async verificaAutenticacao(req, res, next){
+        const authHeader = req.headers["authorization"];
+
+        const token = authHeader && authHeader.split("")[1];
+
+        if(!token){
+            return res.status(422).json({message: "Token não encontrado"});
+        }
+
+        jwt.verify(token, process.env.SECRET_KEY, (err, payload)=>{
+            if(err){
+            return res.status(401).json({msg: "Token Inválido!"});
+            }
+             req.usuarioId = payload.id;
+             next();
+        });
+    }
 }
 module.exports = AuthController;

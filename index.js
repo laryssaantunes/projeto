@@ -1,34 +1,31 @@
 const prisma = require("./prisma/prismaClient");
 const express = require("express");
 const cors = require('cors');
+
 const app = express();
+
 const AuthController = require("./controller/AuthController");
-const profileRoutes = require("./routes/ProfileRoutes"); 
+const profileRoutes = require("./routes/ProfileRoutes");
 const authRoutes = require("./routes/authRoutes");
+const mesaRoutes = require("./routes/mesaRoutes");  
+const reservaRoutes = require("./routes/reservaRoutes");  
 
 app.use(express.json());
 app.use(
     cors({
-        origin: "http://localhost:3000", 
+        origin: "http://localhost:3000",  
         credentials: true
     })
 );
 
-const authRoutes = require("./routes/authRoutes");
-app.use("/auth", authRoutes);
-
-const ProfileRoutes = require("/routes/ProfileRoutes");
-app.use("/perfil", AuthController.autenticar, ProfileRoutes);
-/*
-app.use(express.json());
 app.use("/auth", authRoutes); 
-app.use("/perfil", AuthController.verificaAutenticacao, profileRoutes);  
-app.get("/privado", AuthController.verificaAutenticacao, (req, res) => {
-    res.json({
-        msg: "Você acessou uma rota restrita!"
-    });
-});
-*/
+
+app.use("/perfil", AuthController.autenticar, profileRoutes); 
+
+app.use("/mesa", AuthController.autenticar, mesaRoutes); 
+
+app.use("/reservas", AuthController.autenticar, reservaRoutes);  
+
 app.listen(8000, () => {
     console.log("Servidor rodando na porta 8000");
 });

@@ -20,4 +20,22 @@ model Usuario {
   email String
   password String @default("")
   tipo String @default("cliente")
+  reservas  Reserva[] 
+}
+
+model Mesa {
+  id Int @id @default(autoincrement())
+  codigo String @unique
+  n_lugares Int       
+  reservas  Reserva[] 
+}
+
+model Reserva {
+  id Int @id @default(autoincrement())
+  data DateTime
+  n_pessoas Int
+  usuarioId Int
+  usuario Usuario  @relation(fields: [usuarioId], references: [id])
+  mesaId Int
+  mesa Mesa     @relation(fields: [mesaId], references: [id])
 }

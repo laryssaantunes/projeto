@@ -14,6 +14,12 @@ app.use(
     })
 );
 
+const authRoutes = require("./routes/authRoutes");
+app.use("/auth", authRoutes);
+
+const ProfileRoutes = require("/routes/ProfileRoutes");
+app.use("/perfil", AuthController.autenticar, ProfileRoutes);
+/*
 app.use(express.json());
 app.use("/auth", authRoutes); 
 app.use("/perfil", AuthController.verificaAutenticacao, profileRoutes);  
@@ -22,6 +28,7 @@ app.get("/privado", AuthController.verificaAutenticacao, (req, res) => {
         msg: "Você acessou uma rota restrita!"
     });
 });
+*/
 app.listen(8000, () => {
     console.log("Servidor rodando na porta 8000");
 });

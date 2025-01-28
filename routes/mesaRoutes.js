@@ -6,6 +6,7 @@ const MesaContoller = require("../controller/MesaController");
 
 router.post('/novo', AuthController.verificaAutenticacao, AuthController.verificaPermissaoAdm, MesaContoller.novaMes);
 router.get('/', MesaContoller.buscarMesas);
+router.get('/disponibilidade', MesaContoller.mesasDisp)
 
 
 module.exports = router;

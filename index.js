@@ -2,14 +2,14 @@ const prisma = require("./prisma/prismaClient");
 const express = require("express");
 const cors = require('cors');
 
-const app = express();
-
 const AuthController = require("./controller/AuthController");
+
 const profileRoutes = require("./routes/ProfileRoutes");
 const authRoutes = require("./routes/authRoutes");
 const mesaRoutes = require("./routes/mesaRoutes");  
 const reservaRoutes = require("./routes/reservaRoutes");  
 
+const app = express();
 app.use(express.json());
 app.use(
     cors({
@@ -18,12 +18,16 @@ app.use(
     })
 );
 
+const authRoutes = require("./routes/authRoutes");
 app.use("/auth", authRoutes); 
 
+const profileRoutes = require ("./routes.profileRoutes");
 app.use("/perfil", AuthController.autenticar, profileRoutes); 
 
-app.use("/mesa", AuthController.autenticar, mesaRoutes); 
+const mesaRoutes = require ("./routes.mesaRoutes")
+app.use("/mesa", mesaRoutes); 
 
+const reservaRoutes = require ("./routes.reservaRoutes")
 app.use("/reservas", AuthController.autenticar, reservaRoutes);  
 
 app.listen(8000, () => {

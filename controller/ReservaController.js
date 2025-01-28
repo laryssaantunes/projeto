@@ -1,35 +1,59 @@
-const prisma = require('@prisma/client').PrismaClient;
+const prisma = require("../prisma/prismaClient");
+const router = require("../routes/ProfileRoutes");
+const MesaController = require("./MesaController");
 const prismaClient = new prisma();
 
-const reservarMesa = async (req, res) => {
-  const { data, n_pessoas, mesaId } = req.body;
-  const usuarioId = req.usuario.id;
+class ReservaController{
+  static async registrarReserva (req, res) {
+   const { mesaId, n_pessoas } = req.body;
+   const data = new Date(req.body.data);
 
-  const mesa = await prismaClient.mesa.findUnique({ where: { id: mesaId } });
-  if (!mesa) {
-    return res.status(404).json({ mensagem: 'Mesa não encontrada', erro: true });
-  }
-
-  const reserva = await prismaClient.reserva.create({
-    data: {
-      data: new Date(data),
-      n_pessoas,
-      mesaId,
-      usuarioId,
+   const mesa = await prisma.mesa.findUnique({
+    where: {id: mesaId},
+    include:{
+      reservas: {
+        where:{
+          data: data,
+          status: true,
+        },
+      },
     },
-  });
+   });
 
-  return res.json({ mensagem: 'Mesa reservada com sucesso', erro: false });
-};
+   if(mesa.reserva.length > 0) {
+    return res.status(400).json({
+      erro: true,
+      mensagem: "A mesa selecionada já reservada para está data."
+    });
+   }
 
-const listarReservas = async (req, res) => {
-  const usuarioId = req.usuario.id;
-  const reservas = await prismaClient.reserva.findMany({
-    where: { usuarioId },
-    include: { mesa: true },
-  });
-
-  return res.json({ reservas });
-};
-
-module.exports = { reservarMesa, listarReservas };
+   prisma.reserva.create({
+    data: {
+      data: data,
+      n_pessoas: n_pessoas,
+      usuario: {
+        connect: {
+          id: req.usuarioId
+        },
+      },
+      mesa: {
+        connect: {
+          id: mesaId
+        },
+      },
+    },
+   }).then(() => {
+    return res.status(201).json({
+      erro: false,
+      mensagem: "Reserva realizada com sucesso"
+    });
+   })
+   .catch((err) => {
+    return res.status(201).json({
+      erro: true,
+      mensagem: "Ocorreu um erro ao cadastrar reserva."
+    });
+   });
+}
+}
+module.exports = ReservaController;

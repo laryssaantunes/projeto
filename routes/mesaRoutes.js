@@ -1,11 +1,11 @@
 const express = require('express');
-const { cadastrarMesa, listarMesas } = require('../controllers/mesaController');
-const autenticar = require('../middlewares/autenticar');
-const autorizacaoAdm = require('../middlewares/autorizacaoAdm');
-
 const router = express.Router();
 
-router.post('/novo', autenticar, autorizacaoAdm, cadastrarMesa);
-router.get('/', listarMesas);
+const AuthController = require("../controller/AuthController");
+const MesaContoller = require("../controller/MesaController");
+
+router.post('/novo', AuthController.verificaAutenticacao, AuthController.verificaPermissaoAdm, MesaContoller.novaMes);
+router.get('/', MesaContoller.buscarMesas);
+
 
 module.exports = router;

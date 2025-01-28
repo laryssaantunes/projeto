@@ -23,8 +23,8 @@ model Usuario {
 }
 
 model Mesa {
-  id       Int      @id @default(autoincrement())
-  codigo   String   @unique
+  id Int @id @default(autoincrement())
+  codigo String 
   n_lugares Int
   reservas Reserva[] // Relacionamento com reservas
 }
@@ -33,6 +33,10 @@ model Reserva {
   id Int @id @default(autoincrement())
   data DateTime
   n_pessoas Int
+
+  // true: reserva ativa | false: reserva cancelada
+  status boolean @default(true)
+  
   usuarioId Int
   usuario Usuario @relation(fields: [usuarioId], references: [Id])
   mesaId Int

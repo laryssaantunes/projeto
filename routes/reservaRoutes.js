@@ -1,12 +1,14 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const ReservaController = require("../controllers/ReservaController");
-const AuthController = require('../controllers/AuthComtroller');
+const ReservaController = require("../controller/ReservaController");
+const AuthController = require("../controller/AuthController");
 
-router.post('/novo', ReservaController.registrarReserva);
-router.get('/', autenticar, listarReservas);
-router.delete("/", AuthController.verificaAutenticacao, ReservaController.minhasReserva);
-router.get("/list", AuthController.verificaAutenticacao, AuthController.verificaPermissaoAdm, ReservaController.buscarReservasPorData);
+
+router.post("/novo", AuthController.verificaAutenticacao, ReservaController.registrarReserva);
+router.get("/", AuthController.verificaAutenticacao, ReservaController.minhasReservas);
+router.delete("/", AuthController.verificaAutenticacao, ReservaController.cancelarReserva);
+router.get("/list", AuthController.verificaAutenticacao,  AuthController.verificaPermissaoAdm, ReservaController.buscarReservasPorData
+);
 
 module.exports = router;

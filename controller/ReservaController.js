@@ -6,7 +6,7 @@ class ReservaController {
         const data = new Date(req.body.data);
 
         try {
-            // Verificar se a data da reserva é >= hoje
+            // Verificar se a data da reserva é  hoje
             if (data < new Date()) {
                 return res.status(400).json({
                     erro: true,
@@ -66,7 +66,6 @@ class ReservaController {
                     },
                 },
             });
-
             return res.status(201).json({
                 erro: false,
                 mensagem: "Reserva realizada com sucesso.",
@@ -105,52 +104,54 @@ class ReservaController {
             });
         }
     }
-    /*
+
+
     static async cancelarReserva(req, res) {
-        const { reservaId } = req.body;
-
-        try {
-            const reserva = await prisma.reserva.findUnique({
-                where: { id: parseInt(reservaId) },
-            });
-
-            if (!reserva) {
-                return res.status(401).json({
-                    erro: true,
-                    mensagem: "Reserva não encontrada.",
-                });
-            }
-
-            if (reserva.usuarioId !== req.usuarioId) {
-                return res.status(401).json({
-                    erro: true,
-                    mensagem: "Você não tem permissão para cancelar esta reserva.",
-                });
-            }
-
-            if (new Date(reserva.data) < new Date()) {
-                return res.status(401).json({
-                    erro: true,
-                    mensagem: "Você não pode cancelar reservas de datas anteriores.",
-                });
-            }
-
-            await prisma.reserva.delete({
-                where: { id: parseInt(reservaId) },
-            });
-
-            return res.status(200).json({
-                erro: false,
-                mensagem: "Reserva cancelada com sucesso.",
-            });
-        } catch (err) {
-            console.error(err);
-            return res.status(401).json({
-                erro: true,
-                mensagem: "Erro ao cancelar a reserva.",
-            });
-        }
-    } */
+      const { reservaId } = req.body;
+      try {
+          // Verifica se a reserva existe
+          const reserva = await prisma.reserva.findUnique({
+              where: { id: parseInt(reservaId) },
+          });
+          if (!reserva) {
+              return res.status(404).json({
+                  erro: true,
+                  mensagem: "Reserva não encontrada.",
+              });
+          }
+          // Verifica se o usuário tem permissão para cancelar a reserva
+          if (reserva.usuarioId !== req.usuarioId) {
+              return res.status(403).json({
+                  erro: true,
+                  mensagem: "Você não tem permissão para cancelar esta reserva.",
+              });
+          }
+          // Verifica se a reserva já ocorreu
+          if (new Date(reserva.data) < new Date()) {
+              return res.status(400).json({
+                  erro: true,
+                  mensagem: "Você não pode cancelar reservas de datas passadas.",
+              });
+          }
+          // Atualiza o status da reserva para "cancelada"
+          await prisma.reserva.update({
+              where: { id: parseInt(reservaId) },
+              data: { status: false }, 
+          });
+          return res.status(200).json({
+              erro: false,
+              mensagem: "Reserva cancelada com sucesso.",
+          });
+      } catch (err) {
+          console.error(err);
+          return res.status(500).json({
+              erro: true,
+              mensagem: "Erro ao cancelar a reserva.",
+              detalhe: err.message,
+          });
+      }
+  }
+  
 
      // "Buscar Todas as Reservas por Data"
      static async buscarReservasPorData(req, res) {

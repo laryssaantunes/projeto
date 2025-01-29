@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["omitApi"]
 }
 
 datasource db {
@@ -14,19 +15,19 @@ datasource db {
 }
 
 model Usuario {
-  Id Int @id @default(autoincrement()) 
+  id Int @id @default(autoincrement())
   nome String
-  email String
+  email String @unique
   password String @default("")
-  tipo String @default("cliente")
-  reservas Reserva[] 
+  tipo String 
+  reservas Reserva[]
 }
 
 model Mesa {
   id Int @id @default(autoincrement())
-  codigo String 
+  codigo String
   n_lugares Int
-  reservas Reserva[] // Relacionamento com reservas
+  reservas Reserva[]
 }
 
 model Reserva {
@@ -34,12 +35,12 @@ model Reserva {
   data DateTime
   n_pessoas Int
 
-  // true: reserva ativa | false: reserva cancelada
-  status boolean @default(true)
-  
+  // true: reserva ativa | false: reseva cancelada
+  status Boolean @default(true)
+
   usuarioId Int
-  usuario Usuario @relation(fields: [usuarioId], references: [Id])
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
   mesaId Int
   mesa Mesa @relation(fields: [mesaId], references: [id])
 }
-

@@ -4,7 +4,6 @@ class MesaController {
     static async novaMesa(req, res) {
         const { codigo, n_lugares } = req.body;
 
-        
         if (!codigo || codigo.length < 3) {
             return res.status(422).json({
                 erro: true,
@@ -19,7 +18,6 @@ class MesaController {
             });
         }
 
-        
         const existeMesa = await prisma.mesa.count({
             where: {
                 codigo: codigo,
@@ -54,6 +52,7 @@ class MesaController {
             });
         }
     }
+
     static async buscarMesas(req, res) {
         try {
             const mesas = await prisma.mesa.findMany();
@@ -70,7 +69,8 @@ class MesaController {
             });
         }
     }
-     static async mesasDisp(req, res) {
+
+    static async mesasDisp(req, res) {
         const { data } = req.query;
 
         if (!data) {
@@ -104,8 +104,6 @@ class MesaController {
             });
         }
     }
-
-
 }
 
 module.exports = MesaController;

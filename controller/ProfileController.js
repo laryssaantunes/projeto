@@ -1,6 +1,7 @@
 const prisma = require("../prisma/prismaClient");
 
 class ProfileController {
+    // Função para "Ver Meu Perfil"
     static async getPerfil(req, res) {
         try {
             const usuario = await prisma.usuario.findUnique({
@@ -28,6 +29,7 @@ class ProfileController {
         }
     }
 
+    // Função para "Atualizar Meu Perfil"
     static async atualizaPerfil(req, res) {
         const { nome, email } = req.body;
 
@@ -72,6 +74,7 @@ class ProfileController {
             });
         }
     }
+    // Função para "Buscar Usuários"
     static async buscarUsuarios(req, res) {
         try {
             const usuarios = await prisma.usuario.findMany({
